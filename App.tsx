@@ -7,8 +7,9 @@ import ChatMessageComponent from './components/ChatMessage';
 import { ChatMessage, Sender } from './types';
 import MicrophoneIcon from './components/icons/MicrophoneIcon';
 import SpinnerIcon from './components/icons/SpinnerIcon';
-import SpeakerWaveIcon from './components/icons/SpeakerWaveIcon'; // Novo ícone
+import SpeakerWaveIcon from './components/icons/SpeakerWaveIcon';
 import { ELEVENLABS_API_KEY, ELEVENLABS_API_KEY_PLACEHOLDER } from './constants';
+import HomePage from './components/HomePage';
 
 const BrowserSpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 let recognition: any | null = null;
@@ -22,10 +23,11 @@ if (BrowserSpeechRecognition) {
 }
 
 const App: React.FC = () => {
+  const [showChat, setShowChat] = useState<boolean>(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [isSynthesizingSpeech, setIsSynthesizingSpeech] = useState<boolean>(false); // Novo estado
+  const [isSynthesizingSpeech, setIsSynthesizingSpeech] = useState<boolean>(false);
   const [machadoChat, setMachadoChat] = useState<Chat | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [geminiAvailable, setGeminiAvailable] = useState<boolean>(true);
@@ -36,54 +38,10 @@ const App: React.FC = () => {
   const currentAudioErrorHandler = useRef<((event: Event) => void) | null>(null);
 
   useEffect(() => {
+    // Check for Gemini API key availability on mount.
     if (!process.env.API_KEY) {
         setGeminiAvailable(false);
-    }
-    try {
-      const chatInstance = createMachadoChat();
-      setMachadoChat(chatInstance);
-      setMessages([
-        {
-          id: Date.now().toString(),
-          text: "Saudações! Sou Machado de Assis, ou ao menos uma emulação de seu espírito literário. Em que posso ser útil ou com que reflexões podemos nos entreter hoje?",
-          sender: Sender.Bot,
-          timestamp: new Date(),
-        },
-      ]);
-      if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === ELEVENLABS_API_KEY_PLACEHOLDER) {
-        setMessages(prev => [...prev, {
-            id: Date.now().toString() + '-system-no-audio',
-            text: "A funcionalidade de áudio está desabilitada. Para ativá-la, configure a chave da API da ElevenLabs no arquivo constants.ts.",
-            sender: Sender.System,
-            timestamp: new Date()
-        }]);
-      } else {
-         setMessages(prev => [...prev, {
-            id: Date.now().toString() + '-system-audio-ready',
-            text: "Voz de Machado pronta. As respostas poderão ser ouvidas.",
-            sender: Sender.System,
-            timestamp: new Date()
-        }]);
-      }
-    } catch (e) {
-        setGeminiAvailable(false);
-        if (e instanceof Error) {
-            setError(`Erro ao inicializar o chat com Gemini: ${e.message}. Verifique se a API_KEY do Gemini está configurada corretamente no ambiente.`);
-            setMessages([{
-                id: Date.now().toString(),
-                text: `Não foi possível iniciar a conversa: ${e.message}. Por favor, verifique a configuração da API Key do Gemini.`,
-                sender: Sender.System,
-                timestamp: new Date(),
-            }]);
-        } else {
-            setError("Ocorreu um erro desconhecido ao inicializar o chat com Gemini.");
-             setMessages([{
-                id: Date.now().toString(),
-                text: "Ocorreu um erro desconhecido ao inicializar o chat.",
-                sender: Sender.System,
-                timestamp: new Date(),
-            }]);
-        }
+        setError("Atenção: A API Key do Gemini não foi detectada. O chatbot não funcionará.");
     }
   }, []);
 
@@ -106,9 +64,56 @@ const App: React.FC = () => {
       }
       audioRef.current.src = "";
     }
-    setIsSynthesizingSpeech(false); // Garante que o estado de síntese seja resetado
+    setIsSynthesizingSpeech(false); 
   }, []);
 
+  const handleStartChat = useCallback(() => {
+    if (!geminiAvailable) return;
+    
+    setError(null);
+    setIsLoading(false);
+    cleanupOldAudio();
+    
+    try {
+      const chatInstance = createMachadoChat();
+      setMachadoChat(chatInstance);
+      let initialMessages: ChatMessage[] = [
+        {
+          id: Date.now().toString(),
+          text: "Saudações! Sou Machado de Assis, ou ao menos uma emulação de seu espírito literário. Em que posso ser útil ou com que reflexões podemos nos entreter hoje?",
+          sender: Sender.Bot,
+          timestamp: new Date(),
+        },
+      ];
+      if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === ELEVENLABS_API_KEY_PLACEHOLDER) {
+        initialMessages.push({
+            id: Date.now().toString() + '-system-no-audio',
+            text: "A funcionalidade de áudio está desabilitada. Para ativá-la, configure a chave da API da ElevenLabs no arquivo constants.ts.",
+            sender: Sender.System,
+            timestamp: new Date()
+        });
+      } else {
+         initialMessages.push({
+            id: Date.now().toString() + '-system-audio-ready',
+            text: "Voz de Machado pronta. As respostas poderão ser ouvidas.",
+            sender: Sender.System,
+            timestamp: new Date()
+        });
+      }
+      setMessages(initialMessages);
+      setShowChat(true);
+
+    } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : "Erro desconhecido";
+        setError(`Erro ao inicializar o chat: ${errorMessage}. Verifique a configuração da API Key.`);
+        setShowChat(true); // Show chat screen to display the error
+    }
+  }, [cleanupOldAudio, geminiAvailable]);
+  
+  const handleGoBack = () => {
+    cleanupOldAudio();
+    setShowChat(false);
+  };
 
   const playAudio = useCallback(async (text: string) => {
     if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === ELEVENLABS_API_KEY_PLACEHOLDER || !text) {
@@ -116,7 +121,7 @@ const App: React.FC = () => {
         setIsSynthesizingSpeech(false);
         return;
     }
-    setIsSynthesizingSpeech(true); // Começa a síntese
+    setIsSynthesizingSpeech(true);
     try {
       const audioBlob = await textToSpeech(text);
       if (audioBlob) {
@@ -186,7 +191,7 @@ const App: React.FC = () => {
     };
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
-    setIsSynthesizingSpeech(false); // Reset before new message
+    setIsSynthesizingSpeech(false); 
 
     cleanupOldAudio(); 
 
@@ -201,7 +206,6 @@ const App: React.FC = () => {
       setMessages((prev) => [...prev, botMessage]);
       
       if (ELEVENLABS_API_KEY && ELEVENLABS_API_KEY !== ELEVENLABS_API_KEY_PLACEHOLDER && response.text) {
-        // isLoading é mantido true, playAudio irá setá-lo para false ao terminar ou falhar
         await playAudio(response.text); 
       } else {
         setIsLoading(false);
@@ -257,17 +261,7 @@ const App: React.FC = () => {
     } else {
       if (audioRef.current && !audioRef.current.paused) {
         cleanupOldAudio();
-        // Se a interrupção de áudio estava causando isLoading, ele será resetado indiretamente
-        // pelo fluxo normal de playAudio ou pelo início de uma nova mensagem.
-        // Explicitamente setar isLoading(false) aqui pode ser prematuro se Gemini estiver pensando.
-        // O fluxo de handleSendMessage cuidará de setIsLoading.
       }
-      // Se Gemini estiver 'ponderando' (isLoading=true, !isSynthesizingSpeech), 
-      // iniciar uma nova gravação deve limpar esse estado visualmente, 
-      // pois a nova interação tem prioridade.
-      // setIsLoading(false); // Reset visual do "ponderando" - mas handleSendMessage fará isso.
-      // setIsSynthesizingSpeech(false); // Garante que o indicador de narração suma.
-      
       try {
         recognition.start();
         setIsRecording(true);
@@ -280,15 +274,30 @@ const App: React.FC = () => {
     }
   }, [isRecording, recognition, cleanupOldAudio, setIsRecording, setError, audioRef]);
   
+  if (!showChat) {
+    return <HomePage onStartChat={handleStartChat} />;
+  }
+  
   return (
     <div className="flex flex-col h-screen max-w-3xl mx-auto bg-stone-50 shadow-2xl font-serif">
-      <header className="bg-stone-800 text-white p-4 shadow-md">
-        <h1 className="text-3xl font-['Georgia',_serif] text-amber-50 text-center">Diálogos com Machado de Assis</h1>
-        { !geminiAvailable && <p className="text-xs text-red-400 text-center mt-2">Atenção: A API Key do Gemini não foi detectada ou é inválida. O chatbot pode não funcionar.</p> }
-         { ELEVENLABS_API_KEY && ELEVENLABS_API_KEY !== ELEVENLABS_API_KEY_PLACEHOLDER ? 
-            <p className="text-xs text-emerald-300 text-center mt-2">Áudio da ElevenLabs Ativado.</p> :
-            <p className="text-xs text-amber-300 text-center mt-2">Áudio da ElevenLabs Desativado.</p> // Removido 'Configure a chave...' para simplificar
-         }
+      <header className="bg-stone-800 text-white p-4 shadow-md flex items-center justify-between">
+        <button
+          onClick={handleGoBack}
+          className="p-2 rounded-full hover:bg-stone-700 transition-colors"
+          aria-label="Voltar para a página inicial"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div className="text-center">
+            <h1 className="text-2xl md:text-3xl font-['Georgia',_serif] text-amber-50">Diálogos com Machado</h1>
+            { ELEVENLABS_API_KEY && ELEVENLABS_API_KEY !== ELEVENLABS_API_KEY_PLACEHOLDER ? 
+                <p className="text-xs text-emerald-300">Áudio Ativado</p> :
+                <p className="text-xs text-amber-300">Áudio Desativado</p>
+            }
+        </div>
+        <div className="w-10 h-10"></div> {/* Placeholder to balance flex layout */}
       </header>
 
       {error && (
@@ -301,7 +310,6 @@ const App: React.FC = () => {
         {messages.map((msg) => (
           <ChatMessageComponent key={msg.id} message={msg} />
         ))}
-        {/* Indicador de "ponderando" foi movido para o footer */}
       </div>
 
       <footer className="bg-stone-200 p-3 md:p-4 border-t border-stone-300 flex flex-col items-center justify-center space-y-3 min-h-[140px] md:min-h-[160px]">
@@ -329,20 +337,20 @@ const App: React.FC = () => {
         {BrowserSpeechRecognition ? (
             <button
               onClick={handleVoiceInput}
-              disabled={!geminiAvailable} 
+              disabled={!geminiAvailable || !machadoChat} 
               className={`p-4 rounded-full text-white transition-all duration-200 ease-in-out shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-opacity-50
                           ${isRecording 
                             ? 'bg-red-500 hover:bg-red-600 ring-red-400 animate-pulse' 
-                            : (isLoading && !isRecording) // Visualmente menos ativo se carregando mas não gravando
+                            : (isLoading && !isRecording)
                               ? 'bg-teal-400 hover:bg-teal-500 ring-teal-300'
                               : 'bg-teal-500 hover:bg-teal-600 ring-teal-300'
                           }
-                          ${!geminiAvailable ? 'bg-stone-400 cursor-not-allowed ring-stone-200 pointer-events-none' : ''}
-                          w-16 h-16 md:w-20 md:h-20 flex items-center justify-center 
+                          ${(!geminiAvailable || !machadoChat) ? 'bg-stone-400 cursor-not-allowed ring-stone-200 pointer-events-none' : ''}
+                          w-24 h-24 md:w-28 md:h-28 flex items-center justify-center 
                         `}
               aria-label={isRecording ? "Parar gravação" : "Gravar voz"}
             >
-              <MicrophoneIcon className="w-8 h-8 md:w-10 md:h-10" />
+              <MicrophoneIcon className="w-12 h-12 md:w-14 md:h-14" />
             </button>
           ) : (
             <p className="text-sm text-stone-700">Reconhecimento de voz não suportado neste navegador.</p>

@@ -10,11 +10,11 @@ export const ELEVENLABS_API_URL_BASE = 'https://api.elevenlabs.io/v1/text-to-spe
 export const ELEVENLABS_VOICE_ID_PORTUGUESE = 'onwK4e9ZLuTAKqWW03F9'; 
 export const ELEVENLABS_MODEL_ID = 'eleven_multilingual_v2'; // Or "eleven_brazilian_portuguese_v1" if available and preferred
 
-export const ELEVENLABS_API_KEY_PLACEHOLDER = "sk_cd49bf53f9244fd3d67b9d8f15eb68875c60054f08f72303";
+export const ELEVENLABS_API_KEY_PLACEHOLDER = "SUA_CHAVE_API_ELEVENLABS_AQUI";
 
 /**
  * Insira sua chave API da ElevenLabs aqui.
  * Se esta chave não for fornecida ou for deixada como ELEVENLABS_API_KEY_PLACEHOLDER,
  * a funcionalidade de áudio será desabilitada.
  */
-export const ELEVENLABS_API_KEY: string = "sk_cd49bf53f9244fd3d67b9d8f15eb68875c60054f08f72303";
+export const ELEVENLABS_API_KEY: string = "sk_c55b62ce41b4c97272f1631ff5b2d9368e1dd575e83977e8";
