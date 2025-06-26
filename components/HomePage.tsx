@@ -85,9 +85,9 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
                     <p className="mt-4 text-lg text-stone-600 max-w-2xl mx-auto">Um legado imortal que transcende as páginas e continua a dialogar com cada nova geração de leitores.</p>
                 </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 justify-items-center">
-                    <BookCard imgSrc="https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Memorias_Postumas_de_Bras_Cubas_-_primeira_edi%C3%A7%C3%A3o_da_capa.jpeg/800px-Memorias_Postumas_de_Bras_Cubas_-_primeira_edi%C3%A7%C3%A3o_da_capa.jpeg" title="Memórias Póstumas de Brás Cubas" alt="Capa de Memórias Póstumas de Brás Cubas" />
-                    <BookCard imgSrc="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Dom_Casmurro_cover.jpg/800px-Dom_Casmurro_cover.jpg" title="Dom Casmurro" alt="Capa de Dom Casmurro" />
-                    <BookCard imgSrc="https://upload.wikimedia.org/wikipedia/pt/2/23/Quincas_Borba_-_primeira_edi%C3%A7%C3%A3o_da_capa.jpeg" title="Quincas Borba" alt="Capa de Quincas Borba" />
+                    <BookCard imgSrc="https://machadodeassis-ia.com.br/wp-content/uploads/2024/05/815uSBDpJL._AC_UF10001000_QL80_.jpg" title="Memórias Póstumas de Brás Cubas" alt="Capa de Memórias Póstumas de Brás Cubas" />
+                    <BookCard imgSrc="https://machadodeassis-ia.com.br/wp-content/uploads/2024/05/Dom.jpg" title="Dom Casmurro" alt="Capa de Dom Casmurro" />
+                    <BookCard imgSrc="https://machadodeassis-ia.com.br/wp-content/uploads/2024/05/Imagem-do-WhatsApp-de-2024-05-25-as-19.44.11_ca61784b-1.jpg" title="Quincas Borba" alt="Capa de Quincas Borba" />
                 </div>
             </div>
         </section>
@@ -111,7 +111,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-400 py-6">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-              <p>&copy; {new Date().getFullYear()} Diálogos com Machado de Assis. Uma homenagem literária.</p>
+              <p>2024 Diálogos com Machado de Assis. Uma homenagem literária.</p>
               <p className="mt-2">Todas as imagens e referências à obra de Machado de Assis são utilizadas para fins educacionais e de homenagem.</p>
           </div>
       </footer>
