@@ -323,7 +323,7 @@ const App: React.FC = () => {
           {!isRecording && isLoading && isSynthesizingSpeech && (
             <div className="flex items-center text-teal-700">
               <SpeakerWaveIcon className="w-5 h-5 mr-2 animate-pulse" style={{animationDuration: '1.2s'}}/>
-              <span>Machado está narrando...</span>
+              <span>Machado está preparando o aúdio...</span>
             </div>
           )}
           {!isRecording && isLoading && messages.length > 0 && messages[messages.length -1]?.sender === Sender.User && !isSynthesizingSpeech && (

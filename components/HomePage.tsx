@@ -20,7 +20,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
                 <div className="flex items-center">
-                    <img href="https://ra1z.org/wp-content/uploads/2025/04/Proposta-sistema-CAEMA.png"></img>
+                    <img href="https://ra1z.org/wp-content/uploads/2025/04/Proposta-sistema-CAEMA.png" />
                     <span className="font-bold text-xl font-['Playfair_Display',_serif] text-stone-900">Machado de Assis</span>
                 </div>
                 <div className="hidden md:block">
