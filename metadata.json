@@ -1,0 +1,8 @@
+{
+  "name": "Diálogos com Machado de Assis",
+  "description": "Um aplicativo de chat interativo onde os usuários podem conversar com uma IA personificando o escritor brasileiro Machado de Assis. As respostas da IA são no estilo literário de Machado, e opcionalmente podem ser convertidas em áudio usando a API da ElevenLabs.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "prompt": ""
+}
