@@ -28,6 +28,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
                         <a href="#autor" className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium">O Autor</a>
                         <a href="#obra" className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium">A Obra</a>
                         <a href="#encontro" className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium">O Encontro</a>
+                        <img href="https://ra1z.org/wp-content/uploads/2025/04/Proposta-sistema-CAEMA.png"></img>
                     </div>
                 </div>
             </div>
@@ -63,7 +64,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
                 </div>
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="text-center md:text-left">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Machado_de_Assis_by_Duque_Estrada_em_1903.jpg/800px-Machado_de_Assis_by_Duque_Estrada_em_1903.jpg" alt="Retrato de Machado de Assis" className="rounded-lg shadow-2xl mx-auto md:mx-0 w-3/4 md:w-full max-w-sm" />
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Machado_de_Assis_by_Marc_Ferrez.jpg/500px-Machado_de_Assis_by_Marc_Ferrez.jpg" alt="Retrato de Machado de Assis" className="rounded-lg shadow-2xl mx-auto md:mx-0 w-3/4 md:w-full max-w-sm" />
                     </div>
                     <div className="text-stone-700 leading-relaxed text-lg space-y-6">
                         <p>
