@@ -20,6 +20,7 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
                 <div className="flex items-center">
+                    <img href="https://ra1z.org/wp-content/uploads/2025/04/Proposta-sistema-CAEMA.png"></img>
                     <span className="font-bold text-xl font-['Playfair_Display',_serif] text-stone-900">Machado de Assis</span>
                 </div>
                 <div className="hidden md:block">
@@ -28,7 +29,6 @@ const HomePage: React.FC<HomePageProps> = ({ onStartChat }) => {
                         <a href="#autor" className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium">O Autor</a>
                         <a href="#obra" className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium">A Obra</a>
                         <a href="#encontro" className="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium">O Encontro</a>
-                        <img href="https://ra1z.org/wp-content/uploads/2025/04/Proposta-sistema-CAEMA.png"></img>
                     </div>
                 </div>
             </div>
